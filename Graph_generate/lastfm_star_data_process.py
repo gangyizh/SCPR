@@ -1,16 +1,11 @@
 import os
-import numpy as np
-import gzip
-import pickle
-import pandas as pd
 import json
 from easydict import EasyDict as edict
 
-import random
 
-class LastFmSmallDataset(object):
+class LastFmStarDataset(object):
     def __init__(self, data_dir):
-        self.data_dir = data_dir
+        self.data_dir = data_dir + '/Graph_generate_data'
         self.load_entities()
         self.load_relations()
 
@@ -54,7 +49,7 @@ class LastFmSmallDataset(object):
         entity_files = edict(
             user='user_dict.json',
             item='item_dict.json',
-            feature='small_tag_map.json',
+            feature='original_tag_map.json',
         )
         for entity_name in entity_files:
             with open(os.path.join(self.data_dir, entity_files[entity_name]), encoding='utf-8') as f:
@@ -63,9 +58,7 @@ class LastFmSmallDataset(object):
                 entity_id = list(mydict.values())
             else:
                 entity_id = list(map(int, list(mydict.keys())))
-            # entity_value = list(entity_df.iloc[:, 1].values)
-            # setattr(self, entity_name, edict(id=entity_id, value=entity_value, value_len=max(entity_id)+1))  #len include the id of 0
-            setattr(self, entity_name, edict(id=entity_id, value_len=max(entity_id) + 1))  # len include the id of 0
+            setattr(self, entity_name, edict(id=entity_id, value_len=max(entity_id) + 1))
             print('Load', entity_name, 'of size', len(entity_id))
             print(entity_name, 'of max id is', max(entity_id))
 
@@ -75,23 +68,18 @@ class LastFmSmallDataset(object):
         --
         """
         LastFm_relations = edict(
-            interact=('user_item.json', self.user, self.item),  # (filename, head_entity, tail_entity)
+            interact=('user_item_train.json', self.user, self.item),  # (filename, head_entity, tail_entity)
             friends=('user_dict.json', self.user, self.user),
             like=('user_dict.json', self.user, self.feature),
             belong_to=('item_dict.json', self.item, self.feature),
         )
         for name in LastFm_relations:
             #  Save tail_entity
-            # 'data' saves list of entity_tail indices   data[1]=[2,3,4]  denote head_entity 1 have relation with tail_entity 2,3,4
-            # 'ralation_id' saves tail_entity id
-            # 'relation_distrib' saves tail_entity frequency distribution
             relation = edict(
                 data=[],
-                # relation_id=LastFm_relations[name][2].id,  #xxx tail_entity id
-                # relation_distrib=np.zeros(LastFm_relations[name][2].value_len)  # tail_entity frequency distribution
             )
             knowledge = [list([]) for i in
-                         range(LastFm_relations[name][1].value_len)]  # empty list  length is the num of head_entity
+                         range(LastFm_relations[name][1].value_len)]
             # load relation files
             with open(os.path.join(self.data_dir, LastFm_relations[name][0]), encoding='utf-8') as f:
                 mydict = json.load(f)
@@ -118,24 +106,3 @@ class LastFmSmallDataset(object):
             for i in knowledge:
                 tuple_num += len(i)
             print('Load', name, 'of size', tuple_num)
-
-
-if __name__ == '__main__':
-    data_dir = '../data/lastfm_small/'
-    data_name = 'lastfm_small'
-    save_dir = 'data/train_test/'
-    from KG_data_generate.utils import *
-
-    # ----------------------------------------------
-    # Create Dataset for data
-    # ============BEGIN============
-
-    print('Load', data_name, 'dataset from file...')
-    print(TMP_DIR[data_name])
-    if not os.path.isdir(TMP_DIR[data_name]):
-        os.makedirs(TMP_DIR[data_name])
-    dataset = LastFmSmallDataset(data_dir)
-    save_dataset(data_name, dataset)
-
-
-
