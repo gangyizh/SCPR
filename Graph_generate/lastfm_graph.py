@@ -1,8 +1,3 @@
-import pandas as pd
-import numpy as np
-import random
-
-
 
 class LastFmGraph(object):
 
@@ -57,23 +52,3 @@ class LastFmGraph(object):
                     data = self.G[etype][eid][r]
                     data = tuple(sorted(set(data)))
                     self.G[etype][eid][r] = data
-
-
-
-
-if __name__ == '__main__':
-    from KG_data_generate.utils import *
-    from KG_data_generate.lastfm_data_process import LastFmDataset
-    from KG_data_generate.lastfm_small_data_process import LastFmSmallDataset
-
-    # data_name = LAST_FM  #TODO  lastfm
-
-    data_name = LAST_FM_SMALL  # TODO  lastfm_small
-    # save_dir = 'data/train_test/'
-
-    # Generate knowledge graph instance
-    # ============BEGIN============
-    print('Generate', data_name, 'knowledge graph from dataset...')
-    dataset = load_dataset(data_name)
-    kg = KnowledgeGraph(dataset)
-    save_kg(data_name, kg)

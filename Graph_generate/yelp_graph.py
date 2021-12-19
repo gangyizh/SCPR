@@ -1,8 +1,3 @@
-import pandas as pd
-import numpy as np
-import random
-import sys
-import os
 
 class YelpGraph(object):
 
@@ -57,6 +52,3 @@ class YelpGraph(object):
                     data = self.G[etype][eid][r]
                     data = tuple(sorted(set(data)))
                     self.G[etype][eid][r] = data
-
-
-
