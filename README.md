@@ -1,11 +1,38 @@
 # Interactive Path Reasoning on Graph for Conversational Recommendation
-Conversational Path Reasoning (CPR) framework  introduce graph to address the multi-round conversational recommendation problem. It
+Conversational Path Reasoning ([CPR](https://dl.acm.org/doi/pdf/10.1145/3394486.3403258)) framework  introduce graph to address the multi-round conversational recommendation problem. It
 tackles what item to recommend and what attribute to ask problem
-through message propagation on the graph
+through message propagation on the graph.
 
-This is our torch implementation for the paper:
+If you have any question regarding the CPR System, please contact its main author, Mr. Gangyi Zhang: gangyi.zhang@outlook.com
 
 
+
+Please kindly cite our paper if you use our code/dataset!
+```
+@inproceedings{lei2020interactive,
+  title={Interactive Path Reasoning on Graph for Conversational Recommendation},
+  author={Lei, Wenqiang and Zhang, Gangyi and He, Xiangnan and Miao, Yisong and Wang, Xiang and Chen, Liang and Chua, Tat-Seng},
+  booktitle={Proceedings of the 26th ACM SIGKDD International Conference on Knowledge Discovery \& Data Mining},
+  pages={2073--2083},
+  year={2020}
+}
+```
+
+##### Shortcuts:
+
+**Code:**
+```
+https://cpr-conv-rec.github.io/SCPR.zip
+```
+**Data:**
+```
+- Google Drive： https://drive.google.com/file/d/1NSVwwIPpWsbfvgvyT48ZUbVdkJBjM4M7/view?usp=sharing
+- Tencent Weiyun：https://share.weiyun.com/LletCCdF
+```
+
+---
+
+**This is our torch implementation for the paper:**
 ## Environment Requirement
 * Python >= 3.6
 * Numpy >= 1.12
@@ -14,12 +41,14 @@ This is our torch implementation for the paper:
 ## Example to Run the Code
 **1. Graph Construction**
 ```
-python Main.py --data_name <data_name>
+python graph_init.py --data_name <data_name>
 ```
-''<data_name>'' is one of {''LAST_FM*'', ''LAST_FM'', ''YELP*'', ''YELP''}
+`<data_name>` is one of `{LAST_FM, LAST_FM_STAR, YELP, YELP_STAR}`
 
-Note: ''LAST_FM*'' and  ''YELP*'' using the original attributes (pruning
-off frequency &lt; 10 attributes) for binary question scenario. Following the setting of [EAR](https://arxiv.org/abs/2002.09102), ''LAST_FM'' is designed to evaluate binary question scenario by merging relevant attributes into  coarse-grained attributes and ''YELP'' is designed for enumerated questions by builting a 2-layer taxonomy.
+###### Note: 
+- `LAST_FM_STAR` and  `YELP_STAR` using the original attributes (pruning
+off frequency &lt; 10 attributes) for binary question scenario. 
+- Following the setting of [EAR](https://arxiv.org/abs/2002.09102), `LAST_FM` is designed to evaluate binary question scenario by merging relevant attributes into  coarse-grained attributes and `YELP` is designed for enumerated questions by builting a 2-layer taxonomy.
 
 **2. Train FM Embedding**
 ```
@@ -31,31 +60,38 @@ Use `python FM_train.py -h` to get more argument setting details.
 
 ```
   -h, --help             show this help message and exit
-  --lr <lr>              learning rate
-  --flr <flr>            feature update Learning Rate
-  --bs <bs>              batch size
-  --hs <hs>              hidden size
-  --dr <dr>              dropout ratio
-  --uf <uf>              update feature
-  --seed <seed>          random seed
+  -lr <lr>              learning rate
+  -flr <flr>            learning rate of feature similarity learning
+  -bs <bs>              batch size
+  -hs <hs>              hidden size & embedding size
+  -dr <dr>              dropout ratio
+  -uf <uf>              update feature
+  -me <me>              the number of train epoch
+  -seed <seed>          random seed
   --data_name <data_name>
-                        One of {LAST_FM*, LAST_FM, YELP*, YELP}.
+                        One of {LAST_FM, LAST_FM_STAR, YELP, YELP_STAR}.
 
 ```
 
 
 **3. Train RL Agent & Evaluate**
 ```
-python RL_model.py --data_name <data_name>
+python RL_model.py --data_name <data_name> --fm_epoch <the epoch of FM embedding>
 ```
+###### Note:
+- The default `fm_epoch` is `0`, which means the FM embedding we trained in a particular FM epoch. To run quickly, you can use this preset FM embedding  for RL training, which can be found in the `tmp/<data_name>/FM-model-embeds`.
+
 **More Details:**
 
+
 Use `python RL_model.py -h` to get more argument setting details.
+
+
 
 ```
   -h, --help            show this help message and exit
   --seed <seed>         random seed.
-  --epochs <epochs>     Max number of epochs.
+  --epochs <epochs>     the number of RL train epoch.
   --fm_epoch <fm_epoch> the epoch of FM embedding
   --batch_size <batch_size>
                         batch size.
@@ -63,18 +99,18 @@ Use `python RL_model.py -h` to get more argument setting details.
   --lr <lr>             learning rate.
   --hidden <hidden>     hidden size
   --memory_size <memory_size>
-                        size of memory
+                        the size of memory
   --data_name <data_name>
                         One of {LAST_FM*, LAST_FM, YELP*, YELP}.
   --entropy_method <entropy_method>
-                        entropy_method one of {entropy, weight entropy}
+                        entropy_method is one of {entropy, weight entropy}
   --max_turn <max_turn>
                         max conversation turn
-  --ask_num <ask_num>   the number of asking feature
+  --ask_num <attr_num>   the number of attributes for <data_set>
   --observe_num <observe_num>
-                        the number of epochs to save mode and metric
+                        the number of epochs to save RL model and metric
   --target_update <target_update>
-                        epoch number: update policy parameters
+                        the number of epochs to update policy parameters
 
 ```
 
@@ -82,7 +118,7 @@ Use `python RL_model.py -h` to get more argument setting details.
 
 
 ## Dataset
-We provide three processed datasets: Last-FM, Yelp.
+We provide two processed datasets: Last-FM, Yelp.
 * You can find the full version of recommendation datasets via [Last-FM]( https://grouplens.org/datasets/hetrec-2011/), [Yelp](https://www.yelp.com/dataset/)
 * Here we list the relation types in different datasets to let readers to get
 better understanding of the dataset.
@@ -239,7 +275,8 @@ better understanding of the dataset.
 </table>
 
 ---
-
+## Data Description
+**1. Graph Generate Data**
 
 * `user_item.json`
   * Interaction file.
@@ -247,15 +284,36 @@ better understanding of the dataset.
   
 * `tag_map.json`
   * Map file.
-  * A dictionary of key value pairs. The key and the value of a dictionary entry: [`Real userID` : `userID`].
+  * A dictionary of key value pairs. The key and the value of a dictionary entry: [`Real attributeID` : `attributeID`].
   
 * `user_dict.json`
   * User file.
-  *  A dictionary of key value pairs. The key is (`userID`) and the value of a dictionary entry is a new dict: (''friends'' : `a list of userID`) & [''like'' : `attributeID`)
- 
+  *  A dictionary of key value pairs. The key is `userID` and the value of a dictionary entry is a new dict: (''friends'' : `a list of userID`) & [''like'' : `attributeID`]
   
 * `item_dict.json`
   * Item file.
-  * A dictionary of key value pairs. The key is (`itemID`) and the value of a dictionary entry is a new dict: (''attribute_index'' : `a list of attributeID`) & (''real_ID'' : `real_ID`)
+  * A dictionary of key value pairs. The key is `itemID` and the value of a dictionary entry is a new dict: [''attribute_index'' : `a list of attributeID`] 
 
-  
+**2. FM Sample Data**
+###### For the process of generating FM train data, please refer to Appendix B.2 of the paper.
+* `sample_fm_data.pkl`
+  *  The pickle file consists of five lists, and the fixed index of each list forms a training tuple`(user_id, item_id, neg_item, cand_neg_item, prefer_attributes)`.
+           
+        
+            
+```
+user_pickle = pickle_file[0]           user id
+item_p_pickle = pickle_file[1]         item id that has interacted with user
+i_neg1_pickle = pickle_file[2]         negative item id that has not interacted with user
+i_neg2_pickle = pickle_file[3]         negative item id that has not interacted with the user in the candidate item set
+preference_pickle = pickle_file[4]     the user’s preferred attributes in the current turn
+```
+
+**3. UI Interaction Data**
+
+* `review_dict.json`
+    *  Items that the user has interacted with
+    *  Used for generating FM sample data
+    *  Used for training and testing in RL
+
+    
