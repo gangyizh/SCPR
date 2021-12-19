@@ -443,7 +443,7 @@ def main():
     # file_name = 'v1-FM-lr-0.02-flr-0.0001-reg-0.001-bs-64-command-8-uf-1-seed-0' #lastfm_small
     #
 
-    model = train(dataset, kg, model, bs, max_epoch, optimizer1, optimizer2, optimizer3, reg_, args.qonly, args.observe, args.command, file_name, args.uf, args.useremb)
+    train(dataset, kg, model, bs, max_epoch, optimizer1, optimizer2, optimizer3, reg_, args.qonly, args.observe, args.command, file_name, args.uf, args.useremb)
     save_embedding(model, file_name, epoch=max_epoch)
 
 if __name__ == '__main__':
