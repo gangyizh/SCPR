@@ -9,25 +9,29 @@ import sys
 # from KG_data_generate.lastfm_small_data_process import LastFmSmallDataset
 # from KG_data_generate.lastfm_knowledge_graph import KnowledgeGraph
 #Dataset names
-LAST_FM = 'lastfm'
-LAST_FM_SMALL = 'lastfm_small'
-YELP = 'yelp'
-YELP_SMALL = 'yelp_small'
+LAST_FM = 'LAST_FM'
+LAST_FM_STAR = 'LAST_FM_STAR'
+YELP = 'YELP'
+YELP_STAR = 'YELP_STAR'
 
 DATA_DIR = {
     LAST_FM: './data/lastfm',
     YELP: './data/yelp',
-    LAST_FM_SMALL: './data/lastfm_small',
-    YELP_SMALL: './data/yelp',
+    LAST_FM_STAR: './data/lastfm_star',
+    YELP_STAR: './data/yelp',
 }
 TMP_DIR = {
     LAST_FM: './tmp/last_fm',
     YELP: './tmp/yelp',
-    LAST_FM_SMALL: './tmp/last_fm_small',
-    YELP_SMALL: './tmp/yelp',
+    LAST_FM_STAR: './tmp/last_fm_star',
+    YELP_STAR: './tmp/yelp_star',
 }
 def cuda_(var):
     return var.cuda() if torch.cuda.is_available() else var
+
+def cprint(words : str):
+    print(f"\033[0;30;43m{words}\033[0m")
+
 def save_dataset(dataset, dataset_obj):
     dataset_file = TMP_DIR[dataset] + '/dataset.pkl'
     with open(dataset_file, 'wb') as f:
@@ -47,24 +51,18 @@ def load_kg(dataset):
     kg = pickle.load(open(kg_file, 'rb'))
     return kg
 
-def save_sample_dict(dataset, sample_dict, mode='train'):
-    sample_file = TMP_DIR[dataset] + '/FM-sample-data/{}-sample-dict.pickle'.format(mode)
-    if not os.path.isdir(TMP_DIR[dataset] + '/FM-sample-data/'):
-        os.makedirs(TMP_DIR[dataset] + '/FM-sample-data/')
-    pickle.dump(sample_dict, open(sample_file, 'wb'))
-
-def load_sample_dict(dataset, mode='train'):
-    sample_file = TMP_DIR[dataset] + '/FM-sample-data/{}-sample-dict.pickle'.format(mode)
-    sample_dict = pickle.load(open(sample_file, 'rb'))
-    return sample_dict
 
 def save_fm_sample(dataset, sample_data, mode):
-    sample_file = TMP_DIR[dataset] + '/sample_fm_data_{}.pk1'.format(mode)
+    sample_file = DATA_DIR[dataset] + '/FM_sample_data/sample_fm_data_{}.pkl'.format(mode)
     print('save fm_{}_data in {}'.format(mode, sample_file))
     pickle.dump(sample_data, open(sample_file, 'wb'))
 
-def load_fm_sample(dataset, mode):
-    sample_file = TMP_DIR[dataset] + '/sample_fm_data_{}.pk1'.format(mode)
+def load_fm_sample(dataset, mode, epoch=0):
+    if mode == 'train':
+        sample_file = DATA_DIR[dataset] + '/FM_sample_data/sample_fm_data_{}-{}.pkl'.format(mode, epoch)
+
+    if mode == 'valid':
+        sample_file = DATA_DIR[dataset] + '/FM_sample_data/sample_fm_data_{}.pkl'.format(mode)
     with open(sample_file, 'rb') as f:
         sample_data = pickle.load(f)
     return sample_data
@@ -107,6 +105,7 @@ def save_fm_model_log(dataset, filename, epoch, epoch_loss, epoch_loss_2, train_
         f.write('Starting {} epoch\n'.format(epoch))
         f.write('training loss 1: {}\n'.format(epoch_loss / train_len))
         f.write('training loss 2: {}\n'.format(epoch_loss_2 / train_len))
+        f.write('=============================\n')
         # f.write('1000 loss: {}\n'.format(loss_1000))
 
 
@@ -117,20 +116,6 @@ def save_fm_sample_log(dataset, log_data, head_name, mode='train'):
             f.write(name+'\t')
         f.write('\n')
         np.savetxt(f, log_data, fmt='%s', delimiter='\t')
-
-
-
-def load_rl_data(dataset, mode):
-    path = TMP_DIR[dataset] + '/rl_data_{}'.format(mode) + '.txt'
-    with open(path, mode='r+', encoding='utf-8') as f:
-        data = np.loadtxt(path, dtype=np.int64, delimiter=' ', comments='#')
-        print('load rl {} data successfully, size is {}'.format(mode, data.shape[0]))
-        return data
-
-def save_rl_data(dataset, data, head_name, mode):
-    path = TMP_DIR[dataset] + '/rl_data_{}'.format(mode) + '.txt'
-    with open(path, mode='w+', encoding='utf-8') as f:
-        np.savetxt(path, data, fmt='%d', delimiter=' ', header=' '.join(head_name))
 
 
 def load_rl_agent(dataset, filename, epoch_user):
@@ -148,6 +133,7 @@ def save_rl_agent(dataset, model, filename, epoch_user):
 
 
 
+
 def save_rl_mtric(dataset, filename, epoch, SR, spend_time, mode='train'):
     PATH = TMP_DIR[dataset] + '/RL-log-merge/' + filename + '.txt'
     if not os.path.isdir(TMP_DIR[dataset] + '/RL-log-merge/'):
@@ -155,7 +141,7 @@ def save_rl_mtric(dataset, filename, epoch, SR, spend_time, mode='train'):
     if mode == 'train':
         with open(PATH, 'a') as f:
             f.write('===========Train===============\n')
-            f.write('Starting {} user tuples\n'.format(epoch))
+            f.write('Starting {} user epochs\n'.format(epoch))
             f.write('training SR@5: {}\n'.format(SR[0]))
             f.write('training SR@10: {}\n'.format(SR[1]))
             f.write('training SR@15: {}\n'.format(SR[2]))
@@ -184,6 +170,19 @@ def save_rl_model_log(dataset, filename, epoch, epoch_loss, train_len):
         f.write('training loss : {}\n'.format(epoch_loss / train_len))
         # f.write('1000 loss: {}\n'.format(loss_1000))
 
+def save_pretrain_data(dataset, data):
+    path = TMP_DIR[dataset] + '/Pretrain-data/' + '{}-pretrain-data.pkl'.format(dataset)
+    if not os.path.isdir(TMP_DIR[dataset] + '/Pretrain-data/'):
+        os.makedirs(TMP_DIR[dataset] + '/Pretrain-data/')
+    with open(path, 'wb') as f:
+        pickle.dump(data, f)
+        print('{} Pretrain_data saved successfully!'.format(dataset))
+def load_pretrain_data(dataset):
+    path = TMP_DIR[dataset] + '/Pretrain-data/' + '{}-pretrain-data.pkl'.format(dataset)
+    with open(path, 'rb') as f:
+        data = pickle.load(f)
+        print('{} Pretrain_data load successfully!'.format(dataset))
+        return data
 
 def set_random_seed(seed):
     random.seed(seed)
