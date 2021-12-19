@@ -239,7 +239,7 @@ def main():
     parser.add_argument('--hidden', type=int, default=512, help='number of samples')
     parser.add_argument('--memory_size', type=int, default=50000, help='size of memory ')
 
-    parser.add_argument('--data_name', type=str, default=YELP, choices=[LAST_FM, LAST_FM_STAR, YELP, YELP_STAR],
+    parser.add_argument('--data_name', type=str, default=LAST_FM, choices=[LAST_FM, LAST_FM_STAR, YELP, YELP_STAR],
                         help='One of {LAST_FM, LAST_FM_STAR, YELP, YELP_STAR}.')
     parser.add_argument('--entropy_method', type=str, default='entropy', help='entropy_method is one of {entropy, weight entropy}')
     # Although the performance of 'weighted entropy' is better, 'entropy' is an alternative method considering the time cost.
