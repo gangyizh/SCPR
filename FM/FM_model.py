@@ -48,14 +48,10 @@ class FactorizationMachine(nn.Module):
         return self.compute(ui_pair, feature_index, preference_index)
 
     def compute(self, ui_pair, feature_index, preference_index):
-        feature_matrix_ui = self.ui_emb(ui_pair)  # (bs, 19, emb_size+1), 19 is the largest padding
-        nonzero_matrix_ui = feature_matrix_ui[..., :-1]  # (bs, 19, emb_size)
-        feature_bias_matrix_ui = feature_matrix_ui[..., -1:]  # (bs, 2, 1)
-        #TODO  command is droped  in our FM_model
-        # if self.command in [1, 2, 5]:
-        #     feature_matrix_preference = self.feature_emb(feature_index)
-        # elif self.command in [6, 8]:
-        #     feature_matrix_preference = self.feature_emb(preference_index)
+        feature_matrix_ui = self.ui_emb(ui_pair)
+        nonzero_matrix_ui = feature_matrix_ui[..., :-1]
+        feature_bias_matrix_ui = feature_matrix_ui[..., -1:]
+
         feature_matrix_preference = self.feature_emb(preference_index)
         # _______ dropout has been done already (when data was passed in) _______
         nonzero_matrix_preference = feature_matrix_preference[..., :-1]  # (bs, 2, emb_size)
@@ -78,7 +74,7 @@ class FactorizationMachine(nn.Module):
         # ________ FM __________
         FM = 0.5 * (summed_features_embedding_squared - squared_sum_features_embedding)  # (bs, 1, emb_size)
 
-        # TODO: to remove the inter-group interaction
+        # Optional: remove the inter-group interaction
         # ***---***
 
         new_non_zero_2 = nonzero_matrix_preference
@@ -89,7 +85,6 @@ class FactorizationMachine(nn.Module):
 
         # ***---***
 
-        # TODO: Still need to ADD A DROPOUT LAYER here?
         FM = self.dropout2(FM)  # (bs, 1, emb_size)
 
         Bilinear = FM.sum(dim=2, keepdim=False)  # (bs, 1)
