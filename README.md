@@ -24,11 +24,22 @@ Please kindly cite our paper if you use our code/dataset!
 ```
 https://github.com/farrecall/SCPR
 ```
-**Data:**
+
+**Data (Latest Version 2021.12) :**
+**Suitable for SCPR**
 ```
 - Google Drive： https://drive.google.com/file/d/1Xkq5UGuE70P8QIBOWSmVtxDImnOkCoZA/view?usp=sharing
 - Tencent Weiyun：https://share.weiyun.com/ctZX2rnq
 ```
+**Data (Early Release Version 2020.9) :**
+**Suitable for [UNICORN](https://github.com/dengyang17/unicorn), [MCMIPL](https://arxiv.org/abs/2112.11775)**
+```
+- Google Drive： https://drive.google.com/file/d/1NSVwwIPpWsbfvgvyT48ZUbVdkJBjM4M7/view?usp=sharing
+- Tencent Weiyun：https://share.weiyun.com/LletCCdF
+```
+
+Latest Version (2021.12) of the data is consistent with early data versions (2020.9), but structure is more readable. 
+
 
 ---
 
