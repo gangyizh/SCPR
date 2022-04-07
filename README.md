@@ -32,13 +32,13 @@ https://github.com/farrecall/SCPR
 - Tencent Weiyun：https://share.weiyun.com/ctZX2rnq
 ```
 **Data (Early Release Version 2020.9) :**
-**Suitable for [SCPR v2020](https://cpr-conv-rec.github.io/SCPR.zip) [UNICORN](https://github.com/dengyang17/unicorn), [MCMIPL](https://arxiv.org/abs/2112.11775)**
+**Suitable for [SCPR v2020](https://cpr-conv-rec.github.io/SCPR.zip), [UNICORN](https://github.com/dengyang17/unicorn), [MCMIPL](https://arxiv.org/abs/2112.11775)**
 ```
 - Google Drive： https://drive.google.com/file/d/1NSVwwIPpWsbfvgvyT48ZUbVdkJBjM4M7/view?usp=sharing
 - Tencent Weiyun：https://share.weiyun.com/LletCCdF
 ```
 
-Latest Version (2021.12) of the data is consistent with early data versions (2020.9), but structure is more readable. 
+Latest version (2021.12) of the data is consistent with early data version (2020.9), but structure is more readable. 
 
 
 ---
