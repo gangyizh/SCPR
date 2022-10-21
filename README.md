@@ -1,9 +1,12 @@
-# Interactive Path Reasoning on Graph for Conversational Recommendation
+# SCPR
+
+Paper: **[Interactive Path Reasoning on Graph for Conversational Recommendation (KDD 2020)](https://dl.acm.org/doi/pdf/10.1145/3394486.3403258)**.
+
 Conversational Path Reasoning ([CPR](https://dl.acm.org/doi/pdf/10.1145/3394486.3403258)) framework  introduce graph to address the multi-round conversational recommendation problem. It
 tackles what item to recommend and what attribute to ask problem
 through message propagation on the graph.
 
-If you have any question regarding the CPR System, please contact its main author, Mr. Gangyi Zhang: gangyi.zhang@outlook.com
+<!--If you have any question regarding the CPR System, please contact its main author, Mr. Gangyi Zhang: gangyi.zhang@outlook.com)-->
 
 
 

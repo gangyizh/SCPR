@@ -9,7 +9,7 @@ from Graph_generate.yelp_graph import YelpGraph
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--data_name', type=str, default=LAST_FM, choices=[LAST_FM, LAST_FM_STAR, YELP, YELP_STAR],
+    parser.add_argument('--data_name', type=str, default=LAST_FM_STAR, choices=[LAST_FM, LAST_FM_STAR, YELP, YELP_STAR],
                         help='One of {LAST_FM, LAST_FM_STAR, YELP, YELP_STAR}.')
     args = parser.parse_args()
     DatasetDict = {
