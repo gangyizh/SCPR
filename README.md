@@ -32,7 +32,7 @@ https://github.com/farrecall/SCPR
 **Suitable for SCPR**
 ```
 - Google Drive： https://drive.google.com/file/d/1Xkq5UGuE70P8QIBOWSmVtxDImnOkCoZA/view?usp=sharing
-- Tencent Weiyun：https://share.weiyun.com/LletCCdF
+- Tencent Weiyun：https://share.weiyun.com/ctZX2rnq
 ```
 **Data (Early Release Version 2020.9) :**
 **Suitable for [SCPR_code_v2020](https://drive.google.com/file/d/14zPcHuGvjop7-BADLn5jSYmiYNP9xxuj/view?usp=sharing), [UNICORN](https://github.com/dengyang17/unicorn), [MCMIPL](https://arxiv.org/abs/2112.11775)**
