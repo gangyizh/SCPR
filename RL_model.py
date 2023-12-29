@@ -170,9 +170,9 @@ def train(args, kg, dataset, filename):
         ## =================== Logs about conversations between users and the agent ========================
 
         print('\n================new tuple:{}===================='.format(i_episode))
-        state = env.reset()  # Turn 1: Reset environment and record the starting state
+        state = env.reset()
         state = torch.unsqueeze(torch.FloatTensor(state), 0).to(args.device)
-        for t in count(start=2):  # Turn 2 ~ Turn n: user  dialog
+        for t in count(start=1):  # Turn 1 ~ Turn n
             action = agent.select_action(state)
             next_state, reward, done = env.step(action.item())
             next_state = torch.tensor([next_state], device=args.device, dtype=torch.float)
